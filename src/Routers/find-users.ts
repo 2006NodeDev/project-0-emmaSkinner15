@@ -1,44 +1,43 @@
 import express, {Request, Response} from 'express'
-import {users} from '../index'
+import { getAllUsers, getUserById } from '../daos/user-dao'
+import { updateUserInfo } from '../daos/update-user-dao'
 import { User } from '../Models/User'
 
 export const findUsers = express.Router()
 
-findUsers.get("/:userId", (req: Request, res: Response) => {
-    let id:Number = Number(req.params.userId)
-    for(let user of users){
-        if(user.userId === id){
-            res.json(user)
-        }   
-    }    
+findUsers.get("/:userId", async (req: Request, res: Response) => {
+    let id:BigInt = BigInt(req.params.userId)
+    try{
+        let desiredUser = await getUserById(id)
+        res.json(desiredUser)
+    }catch(err){
+    }
+
 })
 
-findUsers.get("/", (req: Request, res: Response) => {
-
-    res.json(users)
+findUsers.get("/", async (req: Request, res: Response) => {
+    try{
+        let users = await getAllUsers()
+        res.json(users)
+    }catch(err){
+        console.log(err)
+    }
+    
+    
 })
 
-findUsers.patch("/", (req: Request, res: Response) => {
+findUsers.patch("/", async (req: Request, res: Response) => {
     let{ userId, username,
         password, firstName, lastName, email, role} = req.body
-        let allFieldsArray:any[] = [userId, username, password, firstName, lastName, email, role]
-        let fieldNamesArray:string[] = ["userId", "username", "password", "firstName", "lastName", "email", "role"]
-        let successStatus = false
-        let correctUser:User
-        for(let user of users){
-            if(userId === user.userId){
-               correctUser = user
-            }
+        let infoToUpdate:User = {userId:userId, username:username, password:password, firstName:firstName, lastName:lastName, email:email, role:role}
+
+        try{
+            let updatedUser = await updateUserInfo(infoToUpdate)
+            console.log(updatedUser)
+            res.json(updatedUser)
+        }catch(e){
+            console.log(e)
         }
-        for(let number in allFieldsArray){
-            if(allFieldsArray[number]){
-                correctUser[fieldNamesArray[number]] = allFieldsArray[number]
-                console.log(correctUser)
-                successStatus = true
-            }
-        }
-        if(successStatus){
-            res.json(correctUser)
-        }
+        
 
 })
