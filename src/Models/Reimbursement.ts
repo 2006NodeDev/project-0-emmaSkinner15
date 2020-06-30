@@ -1,3 +1,6 @@
+import { ReimbursementStatus } from "./ReimbursementStatus"
+import { ReimbursementType } from "./ReimbursementType"
+
 export class Reimbursement {
     //fields copy pasted from README
     reimbursementId: number  // primary key
@@ -7,6 +10,6 @@ export class Reimbursement {
     dateResolved: number  // not null
     description: string  // not null
     resolver: number  // foreign key -> User
-    status: number  // foreign ey -> ReimbursementStatus  not null
-    type: number // foreign key -> ReimbursementType
+    status: ReimbursementStatus  // foreign ey -> ReimbursementStatus  not null
+    type: ReimbursementType // foreign key -> ReimbursementType
 }

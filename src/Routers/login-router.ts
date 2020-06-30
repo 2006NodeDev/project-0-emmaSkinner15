@@ -15,6 +15,8 @@ loginRouter.post('/', async (req: Request, res: Response) => {
 
         try{
             let foundUser = await loginWithUsernamePassword(username, password)
+            let [user] = foundUser
+            req.session.user = user
             if(foundUser[0]){
                 res.json(foundUser)
             }else{
