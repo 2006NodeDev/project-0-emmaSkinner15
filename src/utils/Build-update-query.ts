@@ -7,7 +7,6 @@ export function buildUpdateQuery(dataToChange:UserDTO){
     let lastNameStr:string = ''
     let emailStr:string = ''
     let roleIdStr:string = ''
-    console.log(dataToChange.user_id)
 
     if(dataToChange.username!==undefined){
         userStr = `, "username"='${dataToChange.username}' `
@@ -31,6 +30,5 @@ export function buildUpdateQuery(dataToChange:UserDTO){
     let sqlScript:string = `update project0.users u set "user_id" = 
     ${dataToChange.user_id}${userStr}${passwordStr}${firstNameStr}${lastNameStr}${emailStr}${roleIdStr} 
      where "user_id"=${dataToChange.user_id};`
-    console.log(sqlScript)
      return sqlScript
 }

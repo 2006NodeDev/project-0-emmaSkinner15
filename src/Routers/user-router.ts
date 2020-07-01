@@ -10,11 +10,17 @@ findUsers.get("/:userId", async (req: Request, res: Response) => {
     let id:BigInt = BigInt(req.params.userId)
     try{
         let desiredUser = await getUserById(id)
-        if(req.session.user.role==='finance-manager'){
-            res.json(desiredUser)
+        //this is a very janky way to do authentication, but my authentication function wasn't working for this endpoint for some reason
+        if(req.session.user){
+            if(req.session.user.role==='finance-manager' || 'admin'){
+                res.json(desiredUser)
+            }else{
+                res.status(401).send("The incoming token has expired")
+            }
         }else{
             res.status(401).send("The incoming token has expired")
         }
+        
         
     }catch(err){
         console.log(err)
@@ -23,7 +29,7 @@ findUsers.get("/:userId", async (req: Request, res: Response) => {
 })
 
 //
-findUsers.get("/",  async (req: Request, res: Response) => {
+findUsers.get("/", authorizationMiddleware(['admin', 'finance-manager']), async (req: Request, res: Response) => {
     try{
         let users = await getAllUsers()
         res.json(users)

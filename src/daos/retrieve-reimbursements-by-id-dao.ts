@@ -1,7 +1,7 @@
 import { connectionPool } from ".";
 import { QueryResult, PoolClient } from "pg";
 
-export async function retrieveReimbursements(userId:number){
+export async function retrieveReimbursementsById(userId:number){
     let client:PoolClient
     try{
         client = await connectionPool.connect()

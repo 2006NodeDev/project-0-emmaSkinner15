@@ -3,14 +3,20 @@ import { Request, Response, NextFunction } from "express";
 export function authorizationMiddleware(roles:string[]){
     return (req:Request, res:Response, next:NextFunction) => {
         let isAuthorized = false
-        for(let role of roles){
-            if(role === req.session.user.role){
-                isAuthorized = true
-                next()
+        //console.log(req.session.user.role)
+        if(req.session.user){
+            for(let role of roles){
+                if(role === req.session.user.role){
+                    isAuthorized = true
+                    next()
+                }
+                if(!isAuthorized){
+                    res.status(401).send("The incoming token has expired")
+                }
             }
-            if(!isAuthorized){
-                res.status(401).send("The incoming token has expired")
-            }
+        }else{
+            res.status(401).send("The incoming token has expired")
         }
+
     }
 }
